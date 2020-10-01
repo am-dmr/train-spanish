@@ -3,3 +3,73 @@
 
 @import "~bootstrap/scss/bootstrap.scss";
 @import "@fortawesome/fontawesome-free";
+
+h3 {
+  font-size: 2rem;
+  padding: 0 0 0 1rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+@include media-breakpoint-down(lg) {
+  $font-size-base: 3rem;
+
+  h3 {
+    font-size: 4rem;
+    padding: 0 0 0 2rem;
+  }
+
+  h4 {
+    font-size: 3rem;
+  }
+
+  body, .navbar-brand, .btn, .form-control, .navbar-toggler, .tooltip-inner {
+    font-size: $font-size-base;
+  }
+
+  .container {
+    max-width: 100%;
+  }
+
+  .table th, .table td {
+    padding: 1.5rem;
+  }
+}
+
+.button-above-table {
+  margin: $font-size-base 0;
+}
+
+.field_with_errors label,
+.field_with_errors .form-control-feedback,
+.field_with_errors .form-control-label,
+.field_with_errors .col-form-label,
+.field_with_errors .form-check-label,
+.field_with_errors .custom-control {
+  color: #d9534f;
+}
+
+.field_with_errors .form-control {
+  border-color: #d9534f;
+}
+
+.field_with_errors .input-group-addon {
+  color: #d9534f;
+  border-color: #d9534f;
+  background-color: #fdf7f7;
+}
+
+.flash-alert {
+  position: fixed;
+  top: 5vh;
+  left: 5vw;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 20rem;
+  padding: 1rem;
+  margin: auto;
+}

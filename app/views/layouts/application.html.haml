@@ -20,6 +20,20 @@
         %span.navbar-toggler-icon
 
       #navbarCollapse.collapse.navbar-collapse
+        - if user_signed_in?
+          %ul.navbar-nav.mr-auto
+            %li.nav-item{ class: controller.controller_name == 'dashboard' ? 'nav-item active' : 'nav-item' }
+              %a.nav-link{ href: root_path }
+                Dashboard
+          %ul.navbar-nav.ml-md-auto
+            %li.nav-item
+              %a.nav-link{ href: destroy_user_session_path, 'data-method' => 'delete' }
+                Logout
+        - else
+          %ul.navbar-nav.mr-auto
+            %li.nav-item
+              %a.nav-link{ href: new_user_session_path }
+                Login
 
     %main.container{ role: 'container' }
       = yield
