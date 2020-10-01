@@ -1,4 +1,3 @@
 class BaseRepository
-    extend Dry::Initializer
-  end
-  
+  extend Dry::Initializer
+end
