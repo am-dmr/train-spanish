@@ -14,6 +14,9 @@ module TrainSpanish
   class Application < Rails::Application
     config.load_defaults 6.0
 
+    config.autoload_paths << Rails.root.join('lib/libs')
+    config.eager_load_paths << Rails.root.join('lib/libs')
+
     config.generators.system_tests = nil
     config.generators do |g|
       g.test_framework :rspec, views: false

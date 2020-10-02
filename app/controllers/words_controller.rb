@@ -1,4 +1,6 @@
 class WordsController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     @words = Word.order(spanish: :asc).page(params[:page]).per(25)
   end
