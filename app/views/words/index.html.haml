@@ -1,0 +1,41 @@
+.container
+  .row
+    .col
+      = link_to 'Create',
+                new_word_path,
+                class: 'btn btn-primary button-above-table',
+                role: 'button'
+  .row
+    .col
+      %table.table.table-striped.table-responsive
+        %thead.thead-dark
+          %tr
+            %th{ scope: 'col' }
+              Articles
+            %th{ scope: 'col' }
+              Spanish
+            %th{ scope: 'col' }
+              Russian
+            %th{ scope: 'col' }
+              Part of speech
+            %th{ scope: 'col' }
+            %th{ scope: 'col' }
+        %tbody
+          - @words.each do |word|
+            %tr
+              %td
+                = word.articles.join(', ')
+              %td
+                = word.spanish
+              %td
+                = word.russian
+              %td
+                = word.part_of_speech
+              %td
+                = link_to edit_word_path(word) do
+                  %i.fas.fa-edit
+              %td
+                = link_to word_path(word),
+                          method: :delete,
+                          data: { confirm: 'Are you sure?' } do
+                  %i.fas.fa-trash-alt

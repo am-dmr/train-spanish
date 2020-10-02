@@ -1,0 +1,17 @@
+.form
+  = form_with model: @word, url: word_path(@word), local: true do |f|
+    = render partial: 'shared/form_errors', locals: { object: @word }
+    .form-group
+      = f.label :articles
+      = f.text_field :articles, class: 'form-control', value: @word.articles.join(', ')
+    .form-group
+      = f.label :part_of_speech
+      = f.select :part_of_speech, Word.part_of_speeches.keys, {}, class: 'form-control'
+    .form-group
+      = f.label :spanish
+      = f.text_field :spanish, class: 'form-control'
+    .form-group
+      = f.label :russian
+      = f.text_field :russian, class: 'form-control'
+    .form-group
+      = f.submit 'Create', class: 'btn btn-primary'
