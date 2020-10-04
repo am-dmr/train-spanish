@@ -1,0 +1,61 @@
+.container
+  .col-lg-6.col-12
+    .row
+      .col
+        %h3
+          New words
+    .row
+      .col
+        = link_to 'Train RU → ES',
+                  new_training_path(word_type: 'new', direction: 'ru-es'),
+                  class: 'btn btn-primary button-above-table',
+                  role: 'button'
+      .col
+        = link_to 'Train ES → RU',
+                  new_training_path(word_type: 'new', direction: 'es-ru'),
+                  class: 'btn btn-primary button-above-table',
+                  role: 'button'
+    .row
+      .col
+        %table.table.table-striped.table-responsive
+          %thead.thead-dark
+            %tr
+              %th{ scope: 'col' }
+                Spanish
+          %tbody
+            - @new_words.each do |new_word|
+              %tr
+                %td
+                  = new_word.spanish
+  .col-lg-6.col-12
+    .row
+      .col
+        %h3
+          Old words
+    .row
+      .col
+        = link_to 'Train RU → ES',
+                  new_training_path(word_type: 'old', direction: 'ru-es'),
+                  class: 'btn btn-primary button-above-table',
+                  role: 'button'
+      .col
+        = link_to 'Train ES → RU',
+                  new_training_path(word_type: 'old', direction: 'es-ru'),
+                  class: 'btn btn-primary button-above-table',
+                  role: 'button'
+    .row
+      .col
+        %table.table.table-striped.table-responsive
+          %thead.thead-dark
+            %tr
+              %th{ scope: 'col' }
+                Spanish
+              %th{ scope: 'col' }
+                Last training
+          %tbody
+            - @old_words.each do |old_word|
+              %tr
+                %td
+                  = old_word.word.spanish
+                %td
+                  = old_word.created_at.strftime('%d.%m.%Y %H:%M')

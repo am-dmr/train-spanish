@@ -1,0 +1,17 @@
+- if params[:direction] == 'ru-es'
+- else
+  .form
+    = form_with model: @training, url: trainings_path, local: true do |f|
+      = render partial: 'shared/form_errors', locals: { object: @training }
+      = f.hidden_field :word_id
+      = f.hidden_field :direction, value: params[:direction]
+      = f.hidden_field :word_type, value: params[:word_type]
+      %p.training-from
+        %span.training-from-articles
+          = @word.articles.join(', ')
+        = @word.spanish
+      .form-group
+        = f.label :russian
+        = f.text_field :russian, class: 'form-control'
+      .form-group
+        = f.submit 'Check', class: 'btn btn-primary'
