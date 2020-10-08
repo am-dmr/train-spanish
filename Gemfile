@@ -22,6 +22,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'pry-byebug'
   gem 'rspec-rails'
+  gem 'rails-controller-testing'
   gem 'database_cleaner'
   gem 'timecop'
 end

@@ -18,9 +18,9 @@ class TrainingsController < ApplicationController
 
   def create
     word = Word.find params[:training][:word_id]
-    training = Trainings::Create.call(current_user, word, training_params[:direction], **training_params)
+    training = Trainings::Create.call(current_user, word, params[:training][:direction], **training_params)
 
-    redirect_to new_training_path(direction: training_params[:direction],
+    redirect_to new_training_path(direction: params[:training][:direction],
                                   word_type: params[:training][:word_type],
                                   last_training_id: training.id)
   end
@@ -43,6 +43,6 @@ class TrainingsController < ApplicationController
 
   def training_params
     @training_params ||=
-      params.require(:training).permit(:direction, :article, :spanish, :russian).to_h.symbolize_keys
+      params.require(:training).permit(:article, :spanish, :russian).to_h.symbolize_keys
   end
 end
