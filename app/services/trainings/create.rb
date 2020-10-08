@@ -21,7 +21,7 @@ class Trainings::Create < BaseService
 
   def ru2es
     result = 0
-    result += 10 if article.blank? || article.casecmp?(article)
+    result += 10 if article.blank? || word.articles.any? { |a| a.casecmp?(article) }
     result += 90 if word.spanish.casecmp?(spanish)
     Training.create(user: user, word: word, user_input: "#{article} #{spanish}", result: result)
   end
