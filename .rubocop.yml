@@ -83,3 +83,6 @@ RSpec/NestedGroups:
 
 RSpec/MessageSpies:
   EnforcedStyle: receive
+
+RSpec/ContextWording:
+  Enabled: false

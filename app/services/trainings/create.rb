@@ -15,14 +15,14 @@ class Trainings::Create < BaseService
   private
 
   def es2ru
-    result = word.russian == russian ? 100 : 0
+    result = word.russian.casecmp?(russian) ? 100 : 0
     Training.create(user: user, word: word, user_input: russian, result: result)
   end
 
   def ru2es
     result = 0
-    result += 10 if article.blank? || word.articles.include?(article)
-    result += 90 if word.spanish == spanish
+    result += 10 if article.blank? || article.casecmp?(article)
+    result += 90 if word.spanish.casecmp?(spanish)
     Training.create(user: user, word: word, user_input: "#{article} #{spanish}", result: result)
   end
 end

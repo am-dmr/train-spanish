@@ -7,7 +7,7 @@ class WordsRepository < BaseRepository
           AND trainings.user_id = #{user.id}
       SQL
       .where(trainings: { id: nil })
-      .order(created_at: :desc)
+      .order(created_at: :asc)
       .limit(25)
   end
 end
