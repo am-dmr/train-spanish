@@ -9,5 +9,7 @@ class Word < ApplicationRecord
     adverb: 6
   }, _prefix: :part_of_speech
 
+  has_many :trainings, dependent: :destroy
+
   validates :spanish, :russian, :part_of_speech, presence: true
 end

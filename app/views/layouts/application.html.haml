@@ -25,6 +25,9 @@
             %li.nav-item{ class: controller.controller_name == 'dashboard' ? 'nav-item active' : 'nav-item' }
               %a.nav-link{ href: root_path }
                 Dashboard
+            %li{ class: controller.controller_name == 'trainings' ? 'nav-item active' : 'nav-item' }
+              %a.nav-link{ href: trainings_path }
+                Trainings
             %li{ class: controller.controller_name == 'words' ? 'nav-item active' : 'nav-item' }
               %a.nav-link{ href: words_path }
                 Words
