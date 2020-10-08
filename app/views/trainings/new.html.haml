@@ -1,11 +1,27 @@
-- if params[:direction] == 'ru-es'
-- else
-  .form
-    = form_with model: @training, url: trainings_path, local: true do |f|
-      = render partial: 'shared/form_errors', locals: { object: @training }
-      = f.hidden_field :word_id
-      = f.hidden_field :direction, value: params[:direction]
-      = f.hidden_field :word_type, value: params[:word_type]
+- if @last_training
+  .last-result
+    %p
+      = @last_training.word.articles.join(', ')
+      = @last_training.word.spanish
+      = @last_training.word.russian
+      = "#{@last_training.result} %"
+.form
+  = form_with model: @training, url: trainings_path, local: true do |f|
+    = render partial: 'shared/form_errors', locals: { object: @training }
+    = f.hidden_field :word_id
+    = f.hidden_field :direction, value: params[:direction]
+    = f.hidden_field :word_type, value: params[:word_type]
+
+    - if params[:direction] == 'ru-es'
+      %p.training-from
+        = @word.russian
+      .form-group
+        = f.label :article
+        = f.text_field :article, class: 'form-control'
+      .form-group
+        = f.label :spanish
+        = f.text_field :spanish, class: 'form-control'
+    - else
       %p.training-from
         %span.training-from-articles
           = @word.articles.join(', ')
@@ -13,5 +29,11 @@
       .form-group
         = f.label :russian
         = f.text_field :russian, class: 'form-control'
-      .form-group
-        = f.submit 'Check', class: 'btn btn-primary'
+
+    .form-group
+      = f.submit 'Check', class: 'btn btn-primary'
+
+= link_to 'Finish',
+          trainings_path,
+          class: 'btn btn-primary button-above-table',
+          role: 'button'

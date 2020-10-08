@@ -12,16 +12,31 @@ class TrainingsController < ApplicationController
       redirect_to trainings_path
       return
     else
+      last_training
       @training = Training.new(word: @word, user: current_user)
     end
   end
 
   def create
+    word = Word.find params[:training][:word_id]
+    training =
+      if params[:training][:direction] == 'es-ru'
+        result = word.russian == params[:training][:russian] ? 100 : 0
+        Training.create(user: current_user, word: word, result: result)
+      end
+
     redirect_to new_training_path(direction: params[:training][:direction],
-                                  word_type: params[:training][:word_type])
+                                  word_type: params[:training][:word_type],
+                                  last_training_id: training.id)
   end
 
   private
+
+  def last_training
+    return nil if params[:last_training_id].blank?
+
+    @last_training ||= Training.find(params[:last_training_id])
+  end
 
   def new_words
     Word
@@ -35,9 +50,18 @@ class TrainingsController < ApplicationController
   end
 
   def old_words
-    Training
-      .includes(:word)
-      .where(user_id: current_user.id)
-      .order(created_at: :asc)
+    relation =
+      Training
+        .joins(<<~SQL)
+          JOIN (
+            SELECT MAX(trainings.id) AS id, user_id, word_id
+            FROM trainings
+            GROUP BY user_id, word_id
+          ) AS last_trainings
+          ON last_trainings.id = trainings.id
+        SQL
+        .includes(:word)
+        .where(user_id: current_user.id)
+    relation.order(id: :asc)
   end
 end
