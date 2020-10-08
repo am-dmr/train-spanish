@@ -4,7 +4,11 @@
       = @last_training.word.articles.join(', ')
       = @last_training.word.spanish
       = @last_training.word.russian
+    %p
+      = @last_training.user_input
+    %p
       = "#{@last_training.result} %"
+    %hr
 .form
   = form_with model: @training, url: trainings_path, local: true do |f|
     = render partial: 'shared/form_errors', locals: { object: @training }
