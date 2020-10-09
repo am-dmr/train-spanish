@@ -1,43 +1,52 @@
-- if @last_training
-  .last-result
-    %p
-      = @last_training.word.articles.join(', ')
-      = @last_training.word.spanish
-      = @last_training.word.russian
-    %p
-      = @last_training.user_input
-    %p
-      = "#{@last_training.result} %"
-    %hr
-.form
-  = form_with model: @training, url: trainings_path, local: true do |f|
-    = render partial: 'shared/form_errors', locals: { object: @training }
-    = f.hidden_field :word_id
-    = f.hidden_field :direction, value: params[:direction]
-    = f.hidden_field :word_type, value: params[:word_type]
+.container
+  .row
+    .col-lg-6.col-12
+      %h6 Last result
+      - if @last_training
+        %p.training-articles
+          = @last_training.word.articles.join(', ')
+        %p.training-spanish
+          = @last_training.word.spanish
+        %p.training-russian
+          = @last_training.word.russian
+        %hr
+        %p.training-user-input
+          = @last_training.user_input
+        %p.training-result
+          = "#{@last_training.result} %"
+    .col-lg-6.col-12
+      .form
+        = form_with model: @training, url: trainings_path, local: true do |f|
+          = render partial: 'shared/form_errors', locals: { object: @training }
+          = f.hidden_field :word_id
+          = f.hidden_field :direction, value: params[:direction]
+          = f.hidden_field :word_type, value: params[:word_type]
 
-    - if params[:direction] == 'ru-es'
-      %p.training-from
-        = @word.russian
-      .form-group
-        = f.label :article
-        = f.text_field :article, class: 'form-control', autofocus: true
-      .form-group
-        = f.label :spanish
-        = f.text_field :spanish, class: 'form-control'
-    - else
-      %p.training-from
-        %span.training-from-articles
-          = @word.articles.join(', ')
-        = @word.spanish
-      .form-group
-        = f.label :russian
-        = f.text_field :russian, class: 'form-control', autofocus: true
+          - if params[:direction] == 'ru-es'
+            %h6 Russian
+            %p.training-russian
+              = @word.russian
+            .form-group
+              = f.label :article
+              = f.text_field :article, class: 'form-control', autofocus: true
+            .form-group
+              = f.label :spanish
+              = f.text_field :spanish, class: 'form-control'
+          - else
+            %h6 Spanish
+            %p.training-articles
+              = @word.articles.join(', ')
+            %p.training-spanish
+              = @word.spanish
+            .form-group
+              = f.label :russian
+              = f.text_field :russian, class: 'form-control', autofocus: true
 
-    .form-group
-      = f.submit 'Check', class: 'btn btn-primary'
-
-= link_to 'Finish',
-          trainings_path,
-          class: 'btn btn-primary button-above-table',
-          role: 'button'
+          .form-group
+            = f.submit 'Check', class: 'btn btn-primary'
+  .row
+    .col-lg-6.col-12
+      = link_to 'Finish',
+                trainings_path,
+                class: 'btn btn-primary button-above-table',
+                role: 'button'
