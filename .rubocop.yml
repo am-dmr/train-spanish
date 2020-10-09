@@ -11,6 +11,11 @@ AllCops:
     - vendor/**/*
     - tmp/*
 
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+  Exclude:
+    - config/application.rb
+
 Style/Documentation:
   Enabled: false
 
@@ -78,3 +83,6 @@ RSpec/NestedGroups:
 
 RSpec/MessageSpies:
   EnforcedStyle: receive
+
+RSpec/ContextWording:
+  Enabled: false
