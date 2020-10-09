@@ -21,7 +21,7 @@
         = @word.russian
       .form-group
         = f.label :article
-        = f.text_field :article, class: 'form-control'
+        = f.text_field :article, class: 'form-control', autofocus: true
       .form-group
         = f.label :spanish
         = f.text_field :spanish, class: 'form-control'
@@ -32,7 +32,7 @@
         = @word.spanish
       .form-group
         = f.label :russian
-        = f.text_field :russian, class: 'form-control'
+        = f.text_field :russian, class: 'form-control', autofocus: true
 
     .form-group
       = f.submit 'Check', class: 'btn btn-primary'
