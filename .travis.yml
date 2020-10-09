@@ -1,0 +1,33 @@
+branches:
+  only:
+  - master
+cache: bundler
+language: ruby
+services:
+  - postgresql
+rvm:
+  - 2.7.1
+env:
+  - DATABASE_URL=postgres://postgres@127.0.0.1:5432/train-spanish-test SECRET_TOKEN=abcdefabcdefabcdef
+before_install:
+  - gem install bundler
+  - nvm install node
+  - npm i -g yarn
+before_script:
+  - yarn
+  - RAILS_ENV=test bundle exec rake db:create
+  - RAILS_ENV=test bundle exec rake db:migrate
+  - RAILS_ENV=test bundle exec rails webpacker:compile
+script:
+  - bundle exec bundler-audit update && bundle exec bundler-audit check
+  - bundle exec rubocop
+  - bundle exec rspec
+deploy:
+  provider: heroku
+  api_key:
+    secure: raXoBJgm8deB4/A+UtrXOtB0PBV5+x0m+NMpuN+YRqkb73vuWjtrhlSezo5Fg+Zp1C0fjHMNp2xzRmvEc5yP9i3wq05ecAJx6/TxCPPfn3PSJiIzvj+Ccxrf+j4anXR5XA+83qRSkrpCtufD6mahViA0FKZ1OsxYQr5Kgua3TJGbUMI8QF3XDHT5HYJajgFNcrCKbEh1c0ASAlf4sRWA/xqjdOHFTNdD3C1Wi3+EsljmjZlcYb7OnJBI150Y+IZPW2ievr5fdFB3opJtgcaHF7RpkYCnOBDrtjruAEWkXSmTEcMRkkM9faR87WHTTZJVMkH3siVxNyXehb9O+XIYUSSe7kE2S9kOFpZP+1Wktm2P9DoWkiG58WMIqmohwctbpS6g5N1HOkPC9oS5i+m5VMr8rE4pRyvBSJQYRXr4ahkMvWVKr7X0g0ZjQPMZ2LtwAqHylb/kVqgQUao8Ae4HNlF4yZbDoJb30jSNPQi4ip221a7zghLu38pqLeV09Cqkb8BW6U384YxBka9KmzS11QqeiuXcnkWmZk0WVyGQwySp98WTjyRfDWZB3rZ0qiJSauhytvQRGw2vNh/u5Z+0R+gTi8rLqiazovDSgnDhbnG/tvryGF3KmaVSBySbm4sORnl0lFJP4R2WAsgUuVjWOlG2e8+CBYct3slH5K5+jPM=
+  app: train-spanish
+  on:
+    repo: am-dmr/train-spanish
+  run:
+    - "rake db:migrate"
