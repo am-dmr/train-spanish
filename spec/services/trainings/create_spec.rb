@@ -54,6 +54,12 @@ describe Trainings::Create do
       it_behaves_like 'creates Training', 100, 'el nino'
     end
 
+    context 'correct with diacritics' do
+      let(:word) { create(:word, articles: %w[un el], spanish: 'niño', russian: 'мальчик') }
+
+      it_behaves_like 'creates Training', 100, 'el nino'
+    end
+
     context 'without article & cased word' do
       let(:article) { '' }
       let(:spanish) { 'nINo' }
