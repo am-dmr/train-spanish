@@ -1,0 +1,34 @@
+.container
+  .row
+    .col
+      %p.training-spanish
+        = @word.spanish
+      %p.training-russian
+        = @word.russian
+  %hr
+  .row
+    .col
+      = form_with model: @word, url: create_verb_forms_word_path(@word), method: :put, local: true do |f|
+        - VerbForm.tenses.keys.each_slice(3) do |tenses_array|
+          .row
+            - tenses_array.each do |tense|
+              .col-lg-4.col-12
+                %h4
+                  = tense.humanize
+                %h5
+                  = VerbForm.display_tense(tense)
+                %table.table.table-striped.table-responsive
+                  %tbody
+                    - VerbForm.pronouns.keys.each do |pronoun|
+                      %tr
+                        %td
+                          = VerbForm.display_pronoun(pronoun)
+                        %td
+                          - verb_form = @verb_forms.find { |vf| vf.tense == tense && vf.pronoun == pronoun }
+                          = f.text_field "[#{tense}][#{pronoun}]",
+                                         class: 'form-control',
+                                         value: verb_form ? verb_form.spanish : ''
+        .row
+          .col
+            = f.submit 'Fill verb forms', class: 'btn btn-primary'
+

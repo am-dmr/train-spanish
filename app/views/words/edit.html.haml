@@ -6,7 +6,7 @@
       = f.text_field :articles, class: 'form-control', value: @word.articles.join(', '), autofocus: true
     .form-group
       = f.label :part_of_speech
-      = f.select :part_of_speech, Word.part_of_speeches.keys, {}, class: 'form-control'
+      = f.select :part_of_speech, Word.part_of_speech_options_for_select, {}, class: 'form-control'
     .form-group
       = f.label :spanish
       = f.text_field :spanish, class: 'form-control'

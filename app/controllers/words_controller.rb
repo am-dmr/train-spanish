@@ -37,6 +37,31 @@ class WordsController < ApplicationController
     end
   end
 
+  def fill_verb_forms
+    @word = Word.find(params[:id])
+    @verb_forms = @word.verb_forms
+  end
+
+  def create_verb_forms
+    word = Word.find(params[:id])
+    verb_forms = word.verb_forms
+
+    params[:word].each do |tense, pronouns|
+      pronouns.each do |pronoun, spanish|
+        next if spanish.blank?
+
+        verb_form = verb_forms.find { |vf| vf.tense == tense && vf.pronoun == pronoun }
+        verb_form ||= word.verb_forms.new(tense: tense, pronoun: pronoun)
+        next if verb_form.spanish == spanish
+
+        verb_form.spanish = spanish
+        verb_form.save
+      end
+    end
+
+    redirect_to words_path
+  end
+
   def destroy
     @word = Word.find(params[:id])
     if @word.destroy

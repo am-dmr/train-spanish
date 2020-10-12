@@ -9,6 +9,8 @@ class Word < ApplicationRecord
     adverb: 6
   }, _prefix: :part_of_speech
 
+  include WithEnum
+
   has_many :trainings, dependent: :destroy
   has_many :verb_forms, dependent: :destroy
 

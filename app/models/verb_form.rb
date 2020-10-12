@@ -8,7 +8,7 @@ class VerbForm < ApplicationRecord
   enum pronoun: {
     yo: 1,
     tu: 2,
-    el_ella_usted: 3,
+    el_usted: 3,
     nosotros: 4,
     vosotros: 5,
     ellos_ustedes: 6

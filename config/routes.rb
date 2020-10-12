@@ -4,5 +4,10 @@ Rails.application.routes.draw do
   root to: 'dashboard#index'
 
   resources :trainings
-  resources :words
+  resources :words do
+    member do
+      get :fill_verb_forms
+      put :create_verb_forms
+    end
+  end
 end
