@@ -44,10 +44,12 @@ class TrainingsController < ApplicationController
 
   def training_params
     @training_params ||=
-      params.require(:training).permit(%i[article spanish russian]).tap do |whitelisted|
+      params.require(:training).permit(:article, :spanish, :russian).tap do |whitelisted|
+        whitelisted[:tenses] = {}
         VerbForm.tenses.each_key do |tense|
-          whitelisted[tense] = params[:training][tense]&.permit!
+          whitelisted[:tenses][tense] = params[:training][tense]&.permit!
         end
+        whitelisted[:tenses].permit!
       end.to_h.symbolize_keys
   end
 end

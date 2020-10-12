@@ -9,9 +9,18 @@
           = @last_training.word.spanish
         %p.training-russian
           = @last_training.word.russian
+        - if @last_training.word.part_of_speech_verb?
+          - verb_forms = @last_training.word.verb_forms
+          - VerbForm.tenses.each_key do |tense|
+            %p.training-line
+              = VerbForm.pronouns.keys.map { |pronoun| verb_forms.find { |vf| vf.tense == tense && vf.pronoun == pronoun }&.spanish }.join(' - ')
         %hr
+        - input = @last_training.user_input.split("\n")
         %p.training-user-input
-          = @last_training.user_input
+          = input[0]
+        - input[1..].each do |line|
+          %p.training-user-input-line
+            = line
         %p.training-result
           = "#{@last_training.result} %"
         %hr
