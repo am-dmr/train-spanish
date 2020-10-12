@@ -14,6 +14,11 @@
           = @last_training.user_input
         %p.training-result
           = "#{@last_training.result} %"
+        %hr
+        = link_to 'Finish',
+                  trainings_path,
+                  class: 'btn btn-primary button-above-table',
+                  role: 'button'
     .col-lg-6.col-12
       .form
         = form_with model: @training, url: trainings_path, local: true do |f|
@@ -42,11 +47,18 @@
               = f.label :russian
               = f.text_field :russian, class: 'form-control', autofocus: true
 
+          - if @word.part_of_speech_verb? && @verb_forms.present?
+            - VerbForm.tenses.each_key do |tense|
+              %h6
+                = "#{tense.humanize} (#{VerbForm.display_tense(tense)})"
+              %table.table.table-striped.table-responsive
+                %tbody
+                  - VerbForm.pronouns.each_key do |pronoun|
+                    %tr
+                      %td
+                        = VerbForm.display_pronoun(pronoun)
+                      %td
+                        = f.text_field "[#{tense}][#{pronoun}]", class: 'form-control'
+
           .form-group
             = f.submit 'Check', class: 'btn btn-primary'
-  .row
-    .col-lg-6.col-12
-      = link_to 'Finish',
-                trainings_path,
-                class: 'btn btn-primary button-above-table',
-                role: 'button'

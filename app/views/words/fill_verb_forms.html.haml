@@ -19,7 +19,7 @@
                   = VerbForm.display_tense(tense)
                 %table.table.table-striped.table-responsive
                   %tbody
-                    - VerbForm.pronouns.keys.each do |pronoun|
+                    - VerbForm.pronouns.each_key do |pronoun|
                       %tr
                         %td
                           = VerbForm.display_pronoun(pronoun)

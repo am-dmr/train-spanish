@@ -7,6 +7,10 @@ class Trainings::Create < BaseService
   option :spanish, optional: true
   option :russian, optional: true
 
+  VerbForm.tenses.each_key do |tense|
+    option tense.to_sym, optional: true
+  end
+
   def call
     return es2ru if direction == 'es-ru'
     return ru2es if direction == 'ru-es'

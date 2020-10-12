@@ -70,7 +70,10 @@ describe TrainingsController do
       before { sign_in(user) }
 
       it 'calls Trainings::Create' do
-        expect(Trainings::Create).to receive(:call).with(user, word, 'es-ru', russian: 'мальчик').and_call_original
+        expect(Trainings::Create)
+          .to receive(:call)
+          .with(user, word, 'es-ru', hash_including(russian: 'мальчик'))
+          .and_call_original
         subject
       end
       it 'redirects to new' do
