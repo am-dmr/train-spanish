@@ -34,6 +34,8 @@ class Trainings::Create < BaseService
   def es2ru
     @result = word.russian.casecmp?(russian) ? 100 : 0
     @user_input = russian
+    additional_input
+
     calc_tenses_result
     create_record
   end
@@ -42,7 +44,8 @@ class Trainings::Create < BaseService
     @result = 0
     @result += 10 if article.blank? || word.articles.any? { |a| a.casecmp?(article) }
     @result += 90 if spanish_casecmp?(word.spanish, spanish)
-    @user_input = "#{article} #{spanish}"
+    @user_input = "#{article} #{spanish}".strip
+    additional_input
 
     calc_tenses_result
     create_record
@@ -63,14 +66,15 @@ class Trainings::Create < BaseService
       result_input[tense] = []
       VerbForm.pronouns.each_key do |pronoun|
         verb_form = find_verb_form(tense, pronoun)
-        user_input = tenses.dig(tense, pronoun)
-        result_input[tense] << user_input
-        next if verb_form.blank? || user_input.blank?
+        user_verb_form = tenses&.dig(tense, pronoun)
+        result_input[tense] << user_verb_form
+        next if verb_form.blank? || user_verb_form.blank?
 
         total += 1
-        correct += 1 if spanish_casecmp?(verb_form.spanish, user_input)
+        correct += 1 if spanish_casecmp?(verb_form.spanish, user_verb_form)
       end
     end
+    return if total.zero?
 
     @tenses_coeff = 0.5 + 0.5 * correct.to_f / total
     @additional_input[:tenses] = result_input
