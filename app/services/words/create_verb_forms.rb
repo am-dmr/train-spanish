@@ -3,6 +3,8 @@ class Words::CreateVerbForms < BaseService
   param :data
 
   def call
+    return if data.blank?
+
     verb_forms = word.verb_forms
 
     data.each do |tense, pronouns|
