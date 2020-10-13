@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_08_135246) do
+ActiveRecord::Schema.define(version: 2020_10_13_152616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_135246) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "user_input", default: "", null: false
+    t.jsonb "additional_input"
     t.index ["user_id"], name: "index_trainings_on_user_id"
     t.index ["word_id"], name: "index_trainings_on_word_id"
   end
@@ -35,6 +36,16 @@ ActiveRecord::Schema.define(version: 2020_10_08_135246) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "verb_forms", force: :cascade do |t|
+    t.bigint "word_id", null: false
+    t.integer "tense", null: false
+    t.integer "pronoun", null: false
+    t.string "spanish", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["word_id"], name: "index_verb_forms_on_word_id"
+  end
+
   create_table "words", force: :cascade do |t|
     t.string "spanish", null: false
     t.string "russian", null: false
@@ -46,4 +57,5 @@ ActiveRecord::Schema.define(version: 2020_10_08_135246) do
 
   add_foreign_key "trainings", "users"
   add_foreign_key "trainings", "words"
+  add_foreign_key "verb_forms", "words"
 end

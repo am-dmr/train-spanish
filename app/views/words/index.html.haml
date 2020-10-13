@@ -19,6 +19,8 @@
             %th{ scope: 'col' }
               Part of speech
             %th{ scope: 'col' }
+              Tenses
+            %th{ scope: 'col' }
             %th{ scope: 'col' }
         %tbody
           - @words.each do |word|
@@ -30,7 +32,11 @@
               %td
                 = word.russian
               %td
-                = word.part_of_speech
+                = word.display_part_of_speech
+              %td
+                - if word.part_of_speech_verb?
+                  = link_to "#{word.verb_forms.count('DISTINCT(tense)')} / 3",
+                            fill_verb_forms_word_path(word)
               %td
                 = link_to edit_word_path(word) do
                   %i.fas.fa-edit
@@ -39,3 +45,6 @@
                           method: :delete,
                           data: { confirm: 'Are you sure?' } do
                   %i.fas.fa-trash-alt
+  .row
+    .col
+      = paginate @words

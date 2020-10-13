@@ -37,6 +37,22 @@ class WordsController < ApplicationController
     end
   end
 
+  def fill_verb_forms
+    @word = Word.find(params[:id])
+    @verb_forms = @word.verb_forms
+  end
+
+  def create_verb_forms
+    word = Word.find(params[:id])
+    data = params.require(:word).permit.tap do |whitelisted|
+      VerbForm.tenses.each_key do |tense|
+        whitelisted[tense] = params[:word][tense]&.permit!
+      end
+    end.to_h
+    Words::CreateVerbForms.call(word, data)
+    redirect_to words_path
+  end
+
   def destroy
     @word = Word.find(params[:id])
     if @word.destroy

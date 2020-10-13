@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 describe Trainings::Create do
-  subject { described_class.call(user, word, direction, article: article, spanish: spanish, russian: russian) }
+  subject do
+    described_class.call(user, word, direction, article: article, spanish: spanish, russian: russian, tenses: tenses)
+  end
 
   let(:user) { create(:user) }
   let(:word) { create(:word, articles: %w[un el], spanish: 'nino', russian: 'мальчик') }
@@ -9,8 +11,9 @@ describe Trainings::Create do
   let(:article) { '' }
   let(:spanish) { '' }
   let(:russian) { '' }
+  let(:tenses) {}
 
-  shared_examples 'creates Training' do |result, user_input|
+  shared_examples 'creates Training' do |result, user_input, additional_input = {}|
     it 'creates Training' do
       expect { subject }.to change { Training.count }.by(1)
     end
@@ -20,7 +23,8 @@ describe Trainings::Create do
         .to have_attributes(word_id: word.id,
                             user_id: user.id,
                             result: result,
-                            user_input: user_input)
+                            user_input: user_input,
+                            additional_input: additional_input)
     end
   end
 
@@ -64,7 +68,7 @@ describe Trainings::Create do
       let(:article) { '' }
       let(:spanish) { 'nINo' }
 
-      it_behaves_like 'creates Training', 100, ' nINo'
+      it_behaves_like 'creates Training', 100, 'nINo'
     end
 
     context 'correct word & incorrect article' do
@@ -86,6 +90,78 @@ describe Trainings::Create do
       let(:spanish) { 'nina' }
 
       it_behaves_like 'creates Training', 0, 'una nina'
+    end
+  end
+
+  describe '#any with tenses' do
+    let(:word) { create(:word, part_of_speech: :verb, spanish: 'hablar', russian: 'говорить') }
+    let(:direction) { 'ru-es' }
+    let(:spanish) { 'hablar' }
+
+    before do
+      create(:verb_form, word: word, tense: :presente_simple, pronoun: :yo, spanish: 'hablo')
+      create(:verb_form, word: word, tense: :presente_simple, pronoun: :el_usted, spanish: 'habla')
+    end
+
+    context 'tenses are blank' do
+      it_behaves_like 'creates Training', 100, 'hablar'
+    end
+
+    context 'both tenses are correct' do
+      let(:tenses) { { 'presente_simple' => { 'yo' => 'hablo', 'el_usted' => 'habla' } } }
+
+      it_behaves_like(
+        'creates Training',
+        100,
+        'hablar',
+        {
+          'tenses' => {
+            'futuro_simple' => [nil, nil, nil, nil, nil, nil],
+            'presente_simple' => ['hablo', nil, 'habla', nil, nil, nil],
+            'preterito_simple' => [nil, nil, nil, nil, nil, nil]
+          }
+        }
+      )
+    end
+
+    context 'both tenses are incorrect' do
+      let(:tenses) { { 'presente_simple' => { 'yo' => 'h', 'el_usted' => 'a' } } }
+
+      it_behaves_like(
+        'creates Training',
+        50,
+        'hablar',
+        {
+          'tenses' => {
+            'futuro_simple' => [nil, nil, nil, nil, nil, nil],
+            'presente_simple' => ['h', nil, 'a', nil, nil, nil],
+            'preterito_simple' => [nil, nil, nil, nil, nil, nil]
+          }
+        }
+      )
+    end
+
+    context 'diff tenses result' do
+      let(:tenses) { { 'presente_simple' => { 'yo' => 'hablo', 'el_usted' => 'a' } } }
+
+      it_behaves_like(
+        'creates Training',
+        75,
+        'hablar',
+        {
+          'tenses' => {
+            'futuro_simple' => [nil, nil, nil, nil, nil, nil],
+            'presente_simple' => ['hablo', nil, 'a', nil, nil, nil],
+            'preterito_simple' => [nil, nil, nil, nil, nil, nil]
+          }
+        }
+      )
+    end
+
+    context 'ignore unknown tenses' do
+      let(:tenses) { { 'presente_simple' => { 'tu' => 'hablas' } } }
+
+      it_behaves_like 'creates Training', 100, 'hablar'
     end
   end
 end

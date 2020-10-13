@@ -12,6 +12,7 @@ class TrainingsController < ApplicationController
       redirect_to trainings_path
     else
       last_training
+      @verb_forms = @word.verb_forms
       @training = Training.new(word: @word, user: current_user)
     end
   end
@@ -43,6 +44,12 @@ class TrainingsController < ApplicationController
 
   def training_params
     @training_params ||=
-      params.require(:training).permit(:article, :spanish, :russian).to_h.symbolize_keys
+      params.require(:training).permit(:article, :spanish, :russian).tap do |whitelisted|
+        whitelisted[:tenses] = {}
+        VerbForm.tenses.each_key do |tense|
+          whitelisted[:tenses][tense] = params[:training][tense]&.permit!
+        end
+        whitelisted[:tenses].permit!
+      end.to_h.symbolize_keys
   end
 end

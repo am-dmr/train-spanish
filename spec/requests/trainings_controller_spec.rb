@@ -70,7 +70,50 @@ describe TrainingsController do
       before { sign_in(user) }
 
       it 'calls Trainings::Create' do
-        expect(Trainings::Create).to receive(:call).with(user, word, 'es-ru', russian: 'мальчик').and_call_original
+        expect(Trainings::Create)
+          .to receive(:call)
+          .with(user, word, 'es-ru', hash_including(russian: 'мальчик'))
+          .and_call_original
+        subject
+      end
+      it 'redirects to new' do
+        expect(subject)
+          .to redirect_to(action: :new, direction: 'es-ru', last_training_id: Training.last.id, word_type: 'new')
+      end
+    end
+
+    context 'with tenses' do
+      let(:tenses_params) do
+        {
+          futuro_simple: {
+            yo: '', tu: '', el_usted: '', nosotros: '', vosotros: '', ellos_ustedes: ''
+          },
+          presente_simple: {
+            yo: 'hablo', tu: 'hables', el_usted: '', nosotros: 'hablamos', vosotros: '', ellos_ustedes: ''
+          },
+          preterito_simple: {
+            yo: '', tu: '', el_usted: '', nosotros: '', vosotros: '', ellos_ustedes: ''
+          }
+        }
+      end
+      let(:params) do
+        {
+          training: {
+            russian: 'мальчик',
+            word_id: word.id,
+            direction: 'es-ru',
+            word_type: 'new'
+          }.merge(tenses_params)
+        }
+      end
+
+      before { sign_in(user) }
+
+      it 'calls Trainings::Create with tenses inputs' do
+        expect(Trainings::Create)
+          .to receive(:call)
+          .with(user, word, 'es-ru', russian: 'мальчик', tenses: tenses_params.deep_stringify_keys)
+          .and_call_original
         subject
       end
       it 'redirects to new' do
