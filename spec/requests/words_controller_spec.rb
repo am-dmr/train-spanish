@@ -162,4 +162,57 @@ describe WordsController do
       end
     end
   end
+
+  describe '#create_verb_forms' do
+    subject { put "/words/#{id}/create_verb_forms", params: params }
+
+    let(:word) { create(:word) }
+    let(:id) { word.id }
+
+    let(:params) { { word: { presente_simple: { yo: 'hablo' } } } }
+
+    shared_examples 'do nothing' do |code|
+      it "returns #{code}" do
+        subject
+        expect(response).to have_http_status(code)
+      end
+      it 'does not update Word' do
+        expect { subject }.not_to(change { word.reload })
+      end
+    end
+
+    context 'without current user' do
+      it_behaves_like('do nothing', 401)
+    end
+
+    context 'with current user' do
+      before { sign_in(user) }
+
+      context 'without params' do
+        let(:params) {}
+
+        it_behaves_like('do nothing', 400)
+      end
+
+      context 'with incorrect ID' do
+        let(:id) { word.id + 1 }
+
+        it_behaves_like('do nothing', 404)
+      end
+
+      context 'with success' do
+        it 'calls Words::CreateVerbForms' do
+          expect(Words::CreateVerbForms)
+            .to receive(:call)
+            .with(
+              word,
+              'preterito_simple' => nil,
+              'presente_simple' => { 'yo' => 'hablo' },
+              'futuro_simple' => nil
+            )
+          subject
+        end
+      end
+    end
+  end
 end

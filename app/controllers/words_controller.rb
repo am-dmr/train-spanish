@@ -44,21 +44,12 @@ class WordsController < ApplicationController
 
   def create_verb_forms
     word = Word.find(params[:id])
-    verb_forms = word.verb_forms
-
-    params[:word].each do |tense, pronouns|
-      pronouns.each do |pronoun, spanish|
-        next if spanish.blank?
-
-        verb_form = verb_forms.find { |vf| vf.tense == tense && vf.pronoun == pronoun }
-        verb_form ||= word.verb_forms.new(tense: tense, pronoun: pronoun)
-        next if verb_form.spanish == spanish
-
-        verb_form.spanish = spanish
-        verb_form.save
+    data = params.require(:word).permit.tap do |whitelisted|
+      VerbForm.tenses.each_key do |tense|
+        whitelisted[tense] = params[:word][tense]&.permit!
       end
-    end
-
+    end.to_h
+    Words::CreateVerbForms.call(word, data)
     redirect_to words_path
   end
 
